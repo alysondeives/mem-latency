@@ -15,10 +15,10 @@ else
 LFLAGS += -lrt
 endif
 
-ifdef RELEASE
-CFLAGS    += -Wall -O3
-else
+ifdef DEBUG
 CFLAGS    += -Wall -ggdb -fno-inline -DLOCAL_DEBUG_ENABLED
+else
+CFLAGS    += -Wall -O3
 endif
 LFLAGS += -Wall
 
@@ -33,7 +33,7 @@ all: dirs $(BINDIR)/mem_latency
 .PHONY: dirs clean
 
 $(BINDIR)/mem_latency: $(OBJDIR)/mem_latency.o $(OBJDIR)/TimeDiff.o $(OBJDIR)/MallocAlign.o
-	$(CC) -o $(BINDIR)/mem_latency $(LFLAGS) $(OBJDIR)/mem_latency.o $(OBJDIR)/TimeDiff.o $(OBJDIR)/MallocAlign.o
+	$(CC) -o $(BINDIR)/mem_latency $(OBJDIR)/mem_latency.o $(OBJDIR)/TimeDiff.o $(OBJDIR)/MallocAlign.o $(LFLAGS)
 
 $(OBJDIR)/mem_latency.o: mem_latency.cpp
 	$(CC) $(CFLAGS) $(INCLUDES) -c mem_latency.cpp -o $(OBJDIR)/mem_latency.o
