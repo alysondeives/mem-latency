@@ -22,7 +22,7 @@ void * MallocAlign( U64 size, U64 align ) {
    
    // reserve space then align
    algnPtr = basePtr + 1;
-   while( algnPtr != algnPtr & mask ) {
+   while( reinterpret_cast< U64 >( algnPtr ) != ( reinterpret_cast< U64 >( algnPtr ) & mask ) ) {
       algnPtr++;
    }
    
@@ -37,7 +37,7 @@ void FreeAlign( char * ptr ) {
    
    char ** algnPtr = (char**) ptr;
    char ** infoPtr = algnPtr - 1;
-   free( (char*) infoPtr );
+   free( (char*) *infoPtr );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
