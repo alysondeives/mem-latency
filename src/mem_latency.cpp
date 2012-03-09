@@ -107,7 +107,8 @@ char ** AllocAlignAndInitBuffer( const TestParams & params ) {
       cout << "... initializing with random values to touch every page" << endl;
    }
    for( U32 ptrIdx = 0; ptrIdx < numPtrs; ptrIdx++ ) {
-      buf[ ptrIdx ] = (char*)rand();
+      // buf[ ptrIdx ] = (char*)rand();
+      buf[ ptrIdx ] = reinterpret_cast< char* >( rand() );
    }
    
    // node bind "from"
