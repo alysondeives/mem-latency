@@ -136,6 +136,7 @@ void FillBufferRandomPtrMod( char ** buf, const U64 size, const U64 numByte ) {
    DEBUG_PRINT( "... zeroing the buffer" );
    for( U64 ptrIdx = 0; ptrIdx < numPtrs; ptrIdx++ ) { buf[ ptrIdx ] = NULL; }
    
+   U64 minDistance = 16;
    U64 currIdx = 0ULL;
    U64 nextIdx = 0ULL;
    used[ 0ULL ] = true;
@@ -148,8 +149,16 @@ void FillBufferRandomPtrMod( char ** buf, const U64 size, const U64 numByte ) {
    DEBUG_PRINT( "... initializing the pointer loop" );
    for( U64 cacheLineIdx = 0; cacheLineIdx < numCacheLines; cacheLineIdx++ ) {
       
-      while( used[ nextIdx] ) {
+      bool minDistanceNotMet = true;
+      while( used[ nextIdx ] || minDistanceNotMet ) {
          nextIdx = rand_U64() % cacheLinesAllocd;
+         
+         U64 distance = 0ULL;
+         if( nextIdx > currIdx ) { distance = nextIdx - currIdx; }
+         else                    { distance = currIdx - nextIdx; }
+         
+         if( distance < minDistance ) { minDistanceNotMet = true;  }
+         else                         { minDistanceNotMet = false; }
       }
       used[ nextIdx ] = true;
       
