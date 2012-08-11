@@ -28,21 +28,21 @@ CC = g++
 OBJDIR  = ../obj
 BINDIR  = ../bin
 
-all: dirs $(BINDIR)/mem_latency
+all: dirs $(BINDIR)/mem-latency
   
 .PHONY: dirs clean
 
-$(BINDIR)/mem_latency: $(OBJDIR)/mem_latency.o $(OBJDIR)/TimeDiff.o $(OBJDIR)/MallocAlign.o
-	$(CC) -o $(BINDIR)/mem_latency $(OBJDIR)/mem_latency.o $(OBJDIR)/TimeDiff.o $(OBJDIR)/MallocAlign.o $(LFLAGS)
+$(BINDIR)/mem-latency: $(OBJDIR)/mem-latency.o $(OBJDIR)/TimeDiff.o $(OBJDIR)/MallocAlign.o
+	$(CC) -o $(BINDIR)/mem-latency $(OBJDIR)/mem-latency.o $(OBJDIR)/TimeDiff.o $(OBJDIR)/MallocAlign.o $(LFLAGS)
 
-$(OBJDIR)/mem_latency.o: mem_latency.cpp
-	$(CC) $(CFLAGS) $(INCLUDES) -c mem_latency.cpp -o $(OBJDIR)/mem_latency.o
+$(OBJDIR)/mem-latency.o: mem-latency.cpp
+	$(CC) -c mem-latency.cpp -o $(OBJDIR)/mem-latency.o $(CFLAGS) $(INCLUDES)
 
 $(OBJDIR)/MallocAlign.o: MallocAlign.cpp
-	$(CC) $(CFLAGS) $(INCLUDES) -c MallocAlign.cpp -o $(OBJDIR)/MallocAlign.o
+	$(CC) -c MallocAlign.cpp -o $(OBJDIR)/MallocAlign.o $(CFLAGS) $(INCLUDES)
 
 $(OBJDIR)/TimeDiff.o: TimeDiff.cpp
-	$(CC) $(CFLAGS) $(INCLUDES) -c TimeDiff.cpp -o $(OBJDIR)/TimeDiff.o
+	$(CC) -c TimeDiff.cpp -o $(OBJDIR)/TimeDiff.o $(CFLAGS) $(INCLUDES)
 
 dirs:
 	mkdir -p $(BINDIR)
