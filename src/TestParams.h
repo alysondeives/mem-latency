@@ -11,6 +11,7 @@ class TestParams {
    U32 from;
    U32 to;
    U32 cacheLineSize;
+   double freq;
    
    TestParams() {
       // defaults:
@@ -24,6 +25,7 @@ class TestParams {
       to   = 0;
       csv  = false;
       verbose = false;
+      freq = 2.5e9;
    }   
 };
 

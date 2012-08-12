@@ -85,16 +85,17 @@ void AnalyzeRunTimeWallTime( const timespec * clks, const TestParams & params, U
       cout << size << "," << 1e9*mean << "," << 1e9*std << endl;
    }
    else {
+      double cycs = mean * params.freq;
       if( size < OneK ) {
-         printf( "size = %3" FMTCODE "  B, mean = %5.1f +/- %4.1f [ns]\n", size, 1e9*mean, 1e9*std );
+         printf( "size = %3" FMTCODE "  B, mean = %5.1f (%5.1f) +/- %4.1f [ns]\n", size, 1e9*mean, cycs, 1e9*std );
       }
       else if( size < OneM ) {
          size /= OneK;
-         printf( "size = %3" FMTCODE " KB, mean = %5.1f +/- %4.1f [ns]\n", size, 1e9*mean, 1e9*std );
+         printf( "size = %3" FMTCODE " KB, mean = %5.1f (%5.1f) +/- %4.1f [ns]\n", size, 1e9*mean, cycs, 1e9*std );
       }
       else {
          size /= OneM;
-         printf( "size = %3" FMTCODE " MB, mean = %5.1f +/- %4.1f [ns]\n", size, 1e9*mean, 1e9*std );
+         printf( "size = %3" FMTCODE " MB, mean = %5.1f (%5.1f) +/- %4.1f [ns]\n", size, 1e9*mean, cycs, 1e9*std );
       }      
    }   
 }
