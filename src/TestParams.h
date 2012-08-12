@@ -18,7 +18,7 @@ class TestParams {
       // memsize = from 256 bytes to 32M
       minsize  = 256;
       maxsize  = 32 * 1024 * 1024;
-      minalloc =  1 * 1024 * 1024;
+      minalloc = 10 * 1024;
       cacheLineSize = 64;
       numTrials = 5;
       from = 0;
