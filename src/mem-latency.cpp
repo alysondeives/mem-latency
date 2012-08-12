@@ -37,13 +37,15 @@
 #define TENTHOUSAND FIVETHOUSAND FIVETHOUSAND
 #define FIFTYTHOUSAND TENTHOUSAND TENTHOUSAND TENTHOUSAND TENTHOUSAND TENTHOUSAND
 #define HUNDREDTHOUSAND FIFTYTHOUSAND FIFTYTHOUSAND
+#define FIVEHUNDREDTHOUSAND HUNDREDTHOUSAND HUNDREDTHOUSAND HUNDREDTHOUSAND HUNDREDTHOUSAND HUNDREDTHOUSAND
+#define MILLION FIVEHUNDREDTHOUSAND FIVEHUNDREDTHOUSAND
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 // shortcuts to use the defines above
 // POINTERCHASE is the code to be executed
 // NUMCHASE is used later to compute the latency
-#define POINTERCHASE TENTHOUSAND
-#define NUMCHASE     10000
+#define POINTERCHASE MILLION // TENTHOUSAND
+#define NUMCHASE     1000000 // 10000
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 #include <Types.h>

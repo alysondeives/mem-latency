@@ -19,7 +19,7 @@ class TestParams {
       maxsize  = 32 * 1024 * 1024;
       minalloc =  1 * 1024 * 1024;
       cacheLineSize = 64;
-      numTrials = 1000;
+      numTrials = 5;
       from = 0;
       to   = 0;
       csv  = false;
