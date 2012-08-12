@@ -4,7 +4,8 @@ class TestParams {
    
    bool csv;
    bool verbose;
-   U64 size;
+   U64 minsize;
+   U64 maxsize;
    U32 numTrials;
    U32 from;
    U32 to;
@@ -12,8 +13,9 @@ class TestParams {
    
    TestParams() {
       // defaults:
-      // memsize = 64M
-      size = 64 * 1024 * 1024;
+      // memsize = from 256 bytes to 32M
+      minsize = 256;
+      maxsize = 32 * 1024 * 1024;
       cacheLineSize = 64;
       numTrials = 1000;
       from = 0;

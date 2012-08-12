@@ -88,8 +88,8 @@ void SetProcessAffinity( U32 cpuIdx, const bool verbose ) {
 char ** AllocAlignAndInitBuffer( const TestParams & params ) {
 
    // calculate number of bytes to allocate
-   // 8x just to leave some headroom when making the pointer chase
-   const U64 numByte = 8 * params.size;
+   // 2x just to leave some headroom when making the pointer chase
+   const U64 numByte = 2 * params.maxsize;
    const U64 numPtrs = numByte / sizeof( char* );
    
    // node bind "to"
@@ -107,7 +107,8 @@ char ** AllocAlignAndInitBuffer( const TestParams & params ) {
       cout << "... initializing with random values to touch every page" << endl;
    }
    for( U32 ptrIdx = 0; ptrIdx < numPtrs; ptrIdx++ ) {
-      buf[ ptrIdx ] = reinterpret_cast< char* >( rand() );
+      // buf[ ptrIdx ] = reinterpret_cast< char* >( rand() );
+      buf[ ptrIdx ] = reinterpret_cast< char* >( 1 + ( ptrIdx % params.cacheLineSize ) );
    }
    
    // node bind "from"
@@ -130,13 +131,13 @@ void FillBufferRandomPtrMod( char ** buf, const U64 size, const U64 numByte ) {
    const U64 cacheLinesAllocd = numByte / cacheLineSize;
    const U64 numCacheLines    = size    / cacheLineSize;
    const U64 numPtrs = numByte / sizeof( char* );
+   const U64 minDistance = 32;
    
    vector< bool > used( cacheLinesAllocd, false );
    
    DEBUG_PRINT( "... zeroing the buffer" );
    for( U64 ptrIdx = 0; ptrIdx < numPtrs; ptrIdx++ ) { buf[ ptrIdx ] = NULL; }
    
-   U64 minDistance = 16;
    U64 currIdx = 0ULL;
    U64 nextIdx = 0ULL;
    used[ 0ULL ] = true;
@@ -144,7 +145,7 @@ void FillBufferRandomPtrMod( char ** buf, const U64 size, const U64 numByte ) {
    U64 currOffset;
    U64 nextOffset;
    
-   char * baseAddr = (char*)&buf[0];
+   char * baseAddr = ( char * ) &buf[ 0 ];
 
    DEBUG_PRINT( "... initializing the pointer loop" );
    for( U64 cacheLineIdx = 0; cacheLineIdx < numCacheLines; cacheLineIdx++ ) {
@@ -162,10 +163,10 @@ void FillBufferRandomPtrMod( char ** buf, const U64 size, const U64 numByte ) {
       }
       used[ nextIdx ] = true;
       
-      currOffset = currIdx * cacheLineSize / sizeof( char* );
-      nextOffset = nextIdx * cacheLineSize / sizeof( char* );
+      currOffset = currIdx * cacheLineSize / sizeof( char * );
+      nextOffset = nextIdx * cacheLineSize / sizeof( char * );
       
-      buf[ currOffset ] = (char*) &buf[ nextOffset ];
+      buf[ currOffset ] = ( char * ) &buf[ nextOffset ];
       
       currIdx = nextIdx;
    }
@@ -178,7 +179,7 @@ char ** MeasureLatency( char ** buf, const U64 size, const TestParams & params, 
    
    DEBUG_PRINT( "MeasureLatency()" );
    
-   const U64 numByte = 8 * params.size;
+   const U64 numByte = 2 * params.maxsize;
    const U32 numTrials = params.numTrials;
    
    FillBufferRandomPtrMod( buf, size, numByte );
@@ -198,6 +199,7 @@ char ** MeasureLatency( char ** buf, const U64 size, const TestParams & params, 
 void PrintUsage( const char * cmd ) {
    cout << cmd << " [-h] [-s <int>]" << endl;
    cout << "-h, --help:      print this message" << endl;
+   cout << "-m, --minimum:   sets size of smallest memory pool" << endl;
    cout << "-s, --size:      sets size of largest memory pool to be tested for latency" << endl;
    cout << "-n, --numtrials: number of tests per memory pool size (default is 1000)" << endl;
    cout << "-f, --from:      set cpu index where test runs" << endl;
@@ -223,6 +225,7 @@ U64 ParseSizeOpt( const string & optarg ) {
    else if( lastchar == 'K' ) {
       size *= 1024;
    }
+   cout << "size = " << size << endl;
    return size;
 }
 bool ParseCmdLineArgs( TestParams & params, int argc, char ** argv ) {
@@ -238,6 +241,7 @@ bool ParseCmdLineArgs( TestParams & params, int argc, char ** argv ) {
    
    static struct option long_options[] = {
        // const char *name, int has_arg, int *flag, int val
+       { "minimum",   required_argument, 0, 'm'  },
        { "size",      required_argument, 0, 's'  },
        { "numtrials", required_argument, 0, 'n'  },
        { "from",      required_argument, 0, 'f'  },
@@ -250,7 +254,7 @@ bool ParseCmdLineArgs( TestParams & params, int argc, char ** argv ) {
 
    while( true ) {
 
-      c = getopt_long( argc, argv, "cs:n:f:t:vh", long_options, &option_index );
+      c = getopt_long( argc, argv, "cm:s:n:f:t:vh", long_options, &option_index );
 
       if( c == -1 ) {
          // end of options
@@ -258,7 +262,10 @@ bool ParseCmdLineArgs( TestParams & params, int argc, char ** argv ) {
       }
       
       if( c == 's' ) {
-         params.size = ParseSizeOpt( optarg );
+         params.maxsize = ParseSizeOpt( optarg );
+      }
+      else if( c == 'm' ) {
+         params.minsize = ParseSizeOpt( optarg );
       }
       else if( c == 'c' ) {
          params.csv = true;
@@ -291,11 +298,11 @@ int main( int argc, char ** argv ) {
    if( !ParseCmdLineArgs( params, argc, argv ) ) {
       exit( -1 );
    }
-   const U64 maxSize = params.size;
+   const U64 maxSize = params.maxsize;
    
-   U64 size = params.size;
+   U64 size = params.maxsize;
 
-   cout << "=== mem_latency ===" << endl;
+   cout << "=== mem-latency ===" << endl;
    DEBUG_PRINT( "sizeof( char* ) = " << sizeof( char* ) );
    
    srand( 1 );
@@ -305,7 +312,7 @@ int main( int argc, char ** argv ) {
 
    timespec * clks = (timespec*) calloc( 2 * params.numTrials, sizeof( timespec ) );
    
-   while( size > 128 ) {
+   while( size > ( params.minsize >> 1 ) ) {
       size >>= 1;
    }
    
