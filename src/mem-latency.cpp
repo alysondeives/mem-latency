@@ -174,22 +174,26 @@ void FillBufferRandomPtrMod( char ** buf, const U64 size, const U64 numByte ) {
 char ** MeasureLatency( char ** buf, const U64 size, const TestParams & params, timespec * clks ) {
    
    DEBUG_PRINT( "MeasureLatency()" );
+   cout << "... MeasureLatency(): entering" << endl;
    
    const U64 numByte   = NumByte( params );
    const U32 numTrials = params.numTrials;
    
+   cout << "... MeasureLatency(): warmup run" << endl;
    FillBufferRandomPtrMod( buf, size, numByte );
    
    char ** p = buf;
    
    p = PointerChase( buf, p, clks );
    
+   cout << "... MeasureLatency(): begin actual runs" << endl;
    for( U32 trialIdx = 0; trialIdx < numTrials; trialIdx++ ) {
       p = PointerChase( buf, p, clks );
       clks++;
       clks++;
    }
    DEBUG_PRINT( "p = 0x" << SETHEX( 0 ) << (U64) p << ", *p = 0x" << SETHEX( 0 ) << (U64) *p );
+   cout << "... MeasureLatency(): leaving" << endl;
    return p;
 }
 ////////////////////////////////////////////////////////////////////////////////
