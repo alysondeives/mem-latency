@@ -174,6 +174,8 @@ char ** MeasureLatency( char ** buf, const U64 size, const TestParams & params, 
    
    char ** p = buf;
    
+   p = PointerChase( buf, p, clks );
+   
    for( U32 trialIdx = 0; trialIdx < numTrials; trialIdx++ ) {
       p = PointerChase( buf, p, clks );
       clks++;
