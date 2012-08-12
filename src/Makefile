@@ -18,7 +18,8 @@ endif
 ifdef DEBUG
 CFLAGS    += -Wall -ggdb -fno-inline -DLOCAL_DEBUG_ENABLED
 else
-CFLAGS    += -Wall -O3
+CFLAGS    += -Wall
+OPTFLAG   += -O3
 endif
 LFLAGS += -Wall
 
@@ -32,16 +33,19 @@ all: dirs $(BINDIR)/mem-latency
   
 .PHONY: dirs clean
 
-$(BINDIR)/mem-latency: $(OBJDIR)/mem-latency.o $(OBJDIR)/TimeDiff.o $(OBJDIR)/MallocAlign.o
-	$(CC) -o $(BINDIR)/mem-latency $(OBJDIR)/mem-latency.o $(OBJDIR)/TimeDiff.o $(OBJDIR)/MallocAlign.o $(LFLAGS)
+$(BINDIR)/mem-latency: $(OBJDIR)/mem-latency.o $(OBJDIR)/TimeDiff.o $(OBJDIR)/MallocAlign.o $(OBJDIR)/PointerChase.o
+	$(CC) -o $(BINDIR)/mem-latency $(OBJDIR)/mem-latency.o $(OBJDIR)/TimeDiff.o $(OBJDIR)/MallocAlign.o $(OBJDIR)/PointerChase.o $(LFLAGS)
 
 $(OBJDIR)/mem-latency.o: mem-latency.cpp
-	$(CC) -c mem-latency.cpp -o $(OBJDIR)/mem-latency.o $(CFLAGS) $(INCLUDES)
+	$(CC) -c mem-latency.cpp -o $(OBJDIR)/mem-latency.o $(CFLAGS) $(OPTFLAG) $(INCLUDES)
 
 $(OBJDIR)/MallocAlign.o: MallocAlign.cpp
-	$(CC) -c MallocAlign.cpp -o $(OBJDIR)/MallocAlign.o $(CFLAGS) $(INCLUDES)
+	$(CC) -c MallocAlign.cpp -o $(OBJDIR)/MallocAlign.o $(CFLAGS) $(OPTFLAG) $(INCLUDES)
 
 $(OBJDIR)/TimeDiff.o: TimeDiff.cpp
+	$(CC) -c TimeDiff.cpp -o $(OBJDIR)/TimeDiff.o $(CFLAGS) $(OPTFLAG) $(INCLUDES)
+
+$(OBJDIR)/PointerChase.o: PointerChase.cpp
 	$(CC) -c TimeDiff.cpp -o $(OBJDIR)/TimeDiff.o $(CFLAGS) $(INCLUDES)
 
 dirs:

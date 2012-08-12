@@ -21,24 +21,24 @@
 #include <boost/random/variate_generator.hpp>
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-// the base pointer chase is "ONE"
-// issue this line of code up to 100 thousand times
-// see POINTERCHASE & NUMCHASE below
-#define ONE p = (char**)(*p);
-#define TWO ONE ONE
-#define FOUR TWO TWO
-#define FIVE    ONE ONE ONE ONE ONE
-#define TEN     FIVE FIVE
-#define FIFTY   TEN TEN TEN TEN TEN
-#define HUNDRED FIFTY FIFTY
-#define FIVEHUNDRED HUNDRED HUNDRED HUNDRED HUNDRED HUNDRED
-#define THOUSAND FIVEHUNDRED FIVEHUNDRED
-#define FIVETHOUSAND THOUSAND THOUSAND THOUSAND THOUSAND THOUSAND
-#define TENTHOUSAND FIVETHOUSAND FIVETHOUSAND
-#define FIFTYTHOUSAND TENTHOUSAND TENTHOUSAND TENTHOUSAND TENTHOUSAND TENTHOUSAND
-#define HUNDREDTHOUSAND FIFTYTHOUSAND FIFTYTHOUSAND
-#define FIVEHUNDREDTHOUSAND HUNDREDTHOUSAND HUNDREDTHOUSAND HUNDREDTHOUSAND HUNDREDTHOUSAND HUNDREDTHOUSAND
-#define MILLION FIVEHUNDREDTHOUSAND FIVEHUNDREDTHOUSAND
+// -- TODO -- remove -- // the base pointer chase is "ONE"
+// -- TODO -- remove -- // issue this line of code up to 100 thousand times
+// -- TODO -- remove -- // see POINTERCHASE & NUMCHASE below
+// -- TODO -- remove -- #define ONE p = (char**)(*p);
+// -- TODO -- remove -- #define TWO ONE ONE
+// -- TODO -- remove -- #define FOUR TWO TWO
+// -- TODO -- remove -- #define FIVE    ONE ONE ONE ONE ONE
+// -- TODO -- remove -- #define TEN     FIVE FIVE
+// -- TODO -- remove -- #define FIFTY   TEN TEN TEN TEN TEN
+// -- TODO -- remove -- #define HUNDRED FIFTY FIFTY
+// -- TODO -- remove -- #define FIVEHUNDRED HUNDRED HUNDRED HUNDRED HUNDRED HUNDRED
+// -- TODO -- remove -- #define THOUSAND FIVEHUNDRED FIVEHUNDRED
+// -- TODO -- remove -- #define FIVETHOUSAND THOUSAND THOUSAND THOUSAND THOUSAND THOUSAND
+// -- TODO -- remove -- #define TENTHOUSAND FIVETHOUSAND FIVETHOUSAND
+// -- TODO -- remove -- #define FIFTYTHOUSAND TENTHOUSAND TENTHOUSAND TENTHOUSAND TENTHOUSAND TENTHOUSAND
+// -- TODO -- remove -- #define HUNDREDTHOUSAND FIFTYTHOUSAND FIFTYTHOUSAND
+// -- TODO -- remove -- #define FIVEHUNDREDTHOUSAND HUNDREDTHOUSAND HUNDREDTHOUSAND HUNDREDTHOUSAND HUNDREDTHOUSAND HUNDREDTHOUSAND
+// -- TODO -- remove -- #define MILLION FIVEHUNDREDTHOUSAND FIVEHUNDREDTHOUSAND
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 // shortcuts to use the defines above
@@ -53,6 +53,9 @@
 #include <TimeDiff.h>
 #include <TestParams.h>
 #include <MallocAlign.h>
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+char ** PointerChase( char ** buf, char ** p, timespec * clks );
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 using namespace std;
@@ -198,9 +201,9 @@ char ** MeasureLatency( char ** buf, const U64 size, const TestParams & params, 
    char ** p = buf;
    
    for( U32 trialIdx = 0; trialIdx < numTrials; trialIdx++ ) {
-      clock_gettime( CLOCK_MONOTONIC, clks ); clks++;
-      POINTERCHASE
-      clock_gettime( CLOCK_MONOTONIC, clks ); clks++;
+      p = PointerChase( buf, p, clks );
+      clks++;
+      clks++;
    }
    DEBUG_PRINT( "p = 0x" << SETHEX( 0 ) << (U64) p << ", *p = 0x" << SETHEX( 0 ) << (U64) *p );
    return p;
