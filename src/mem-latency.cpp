@@ -21,38 +21,12 @@
 #include <boost/random/variate_generator.hpp>
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-// -- TODO -- remove -- // the base pointer chase is "ONE"
-// -- TODO -- remove -- // issue this line of code up to 100 thousand times
-// -- TODO -- remove -- // see POINTERCHASE & NUMCHASE below
-// -- TODO -- remove -- #define ONE p = (char**)(*p);
-// -- TODO -- remove -- #define TWO ONE ONE
-// -- TODO -- remove -- #define FOUR TWO TWO
-// -- TODO -- remove -- #define FIVE    ONE ONE ONE ONE ONE
-// -- TODO -- remove -- #define TEN     FIVE FIVE
-// -- TODO -- remove -- #define FIFTY   TEN TEN TEN TEN TEN
-// -- TODO -- remove -- #define HUNDRED FIFTY FIFTY
-// -- TODO -- remove -- #define FIVEHUNDRED HUNDRED HUNDRED HUNDRED HUNDRED HUNDRED
-// -- TODO -- remove -- #define THOUSAND FIVEHUNDRED FIVEHUNDRED
-// -- TODO -- remove -- #define FIVETHOUSAND THOUSAND THOUSAND THOUSAND THOUSAND THOUSAND
-// -- TODO -- remove -- #define TENTHOUSAND FIVETHOUSAND FIVETHOUSAND
-// -- TODO -- remove -- #define FIFTYTHOUSAND TENTHOUSAND TENTHOUSAND TENTHOUSAND TENTHOUSAND TENTHOUSAND
-// -- TODO -- remove -- #define HUNDREDTHOUSAND FIFTYTHOUSAND FIFTYTHOUSAND
-// -- TODO -- remove -- #define FIVEHUNDREDTHOUSAND HUNDREDTHOUSAND HUNDREDTHOUSAND HUNDREDTHOUSAND HUNDREDTHOUSAND HUNDREDTHOUSAND
-// -- TODO -- remove -- #define MILLION FIVEHUNDREDTHOUSAND FIVEHUNDREDTHOUSAND
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-// shortcuts to use the defines above
-// POINTERCHASE is the code to be executed
-// NUMCHASE is used later to compute the latency
-#define POINTERCHASE MILLION // TENTHOUSAND
-#define NUMCHASE     1000000 // 10000
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
 #include <Types.h>
 #include <Defines.h>
 #include <TimeDiff.h>
 #include <TestParams.h>
 #include <MallocAlign.h>
+#include <PointerChase.h>
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 char ** PointerChase( char ** buf, char ** p, timespec * clks );
