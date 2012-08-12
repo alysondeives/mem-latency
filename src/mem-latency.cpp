@@ -234,7 +234,7 @@ U64 ParseSizeOpt( const string & optarg ) {
    else if( lastchar == 'K' ) {
       size *= 1024;
    }
-   cout << "size = " << size << endl;
+   // -- TODO -- remove -- cout << "size = " << size << endl;
    return size;
 }
 bool ParseCmdLineArgs( TestParams & params, int argc, char ** argv ) {
@@ -296,6 +296,13 @@ bool ParseCmdLineArgs( TestParams & params, int argc, char ** argv ) {
          return false;
       }
    }
+   
+   if( params.minsize > params.maxsize ) {
+      const U64 t = params.minsize;
+      params.minsize = params.maxsize;
+      params.maxsize = t;
+   }
+   
    return true;
 }
 ////////////////////////////////////////////////////////////////////////////////
