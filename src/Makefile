@@ -46,7 +46,7 @@ $(OBJDIR)/TimeDiff.o: TimeDiff.cpp
 	$(CC) -c TimeDiff.cpp -o $(OBJDIR)/TimeDiff.o $(CFLAGS) $(OPTFLAG) $(INCLUDES)
 
 $(OBJDIR)/PointerChase.o: PointerChase.cpp
-	$(CC) -c TimeDiff.cpp -o $(OBJDIR)/TimeDiff.o $(CFLAGS) $(INCLUDES)
+	$(CC) -c PointerChase.cpp -o $(OBJDIR)/PointerChase.o $(CFLAGS) $(INCLUDES)
 
 dirs:
 	mkdir -p $(BINDIR)
