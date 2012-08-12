@@ -39,9 +39,14 @@ const U64 NumByte( const TestParams & params ) {
    
    // calculate number of bytes to allocate
    // 2x just to leave some headroom when making the pointer chase
-   const U64 alloc   = ( params.maxsize > params.minalloc ) ? params.maxsize : params.minalloc;
-   const U64 numByte = 2 * alloc;
+   //
+   // const U64 alloc   = ( params.maxsize > params.minalloc ) ? params.maxsize : params.minalloc;
+   // const U64 numByte = 2 * alloc;
+   const U64 onemegabyte = 1ULL << 20ULL;
+   const bool smallalloc = params.maxsize > onemegabyte;
+   const U64 numByte = smallalloc ? ( params.maxsize << 1 ) : ( params.maxsize << 5 ) ;
    
+   cout << "... NumByte(): smallalloc = " << smallalloc << ", numByte = " << ( numByte >> 10 ) << "K" << endl;
    return numByte;
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -77,6 +82,7 @@ void SetProcessAffinity( U32 cpuIdx, const bool verbose ) {
 }
 char ** AllocAlignAndInitBuffer( const TestParams & params ) {
 
+   cout << "... AllocAlignAndInitBuffer(): entering" << endl;
    const U64 numByte = NumByte( params );
    const U64 numPtrs = numByte / sizeof( char* );
    
@@ -102,6 +108,7 @@ char ** AllocAlignAndInitBuffer( const TestParams & params ) {
    // node bind "from"
    SetProcessAffinity( params.from, params.verbose );
    
+   cout << "... AllocAlignAndInitBuffer(): leaving" << endl;
    return buf;
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -109,6 +116,7 @@ char ** AllocAlignAndInitBuffer( const TestParams & params ) {
 void FillBufferRandomPtrMod( char ** buf, const U64 size, const U64 numByte ) {
    
    DEBUG_PRINT( "FillBufferRandomPtrMod( buf, " << size << ", " << numByte << ");" );
+   cout << "... FillBufferRandomPtrMod(): entering" << endl;
 
    boost::mt19937 gen;
    gen.seed( rand() );
@@ -161,7 +169,7 @@ void FillBufferRandomPtrMod( char ** buf, const U64 size, const U64 numByte ) {
    
    currOffset = currIdx * cacheLineSize / sizeof( char* );
    buf[ currOffset ] = baseAddr;
-
+   cout << "... FillBufferRandomPtrMod(): leaving" << endl;
 }
 char ** MeasureLatency( char ** buf, const U64 size, const TestParams & params, timespec * clks ) {
    
