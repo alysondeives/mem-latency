@@ -3,7 +3,7 @@
 
 // POINTERCHASE is the code to be executed
 // NUMCHASE is used later to compute the latency
-#define POINTERCHASE MILLION // TENTHOUSAND
-#define NUMCHASE     1000000 // 10000
+#define POINTERCHASE THOUSAND // MILLION // TENTHOUSAND
+#define NUMCHASE     1000     // 1000000 // 10000
 
 #endif
