@@ -56,6 +56,17 @@
 using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
+const U64 NumByte( const TestParams & params ) {
+   
+   // calculate number of bytes to allocate
+   // 2x just to leave some headroom when making the pointer chase
+   const U64 alloc   = ( params.maxsize > params.minalloc ) ? params.maxsize : params.minalloc;
+   const U64 numByte = 2 * alloc;
+   
+   return numByte;
+}
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 void SetProcessAffinity( U32 cpuIdx, const bool verbose ) {
 
    #ifndef __MAC_OSX__
@@ -87,9 +98,7 @@ void SetProcessAffinity( U32 cpuIdx, const bool verbose ) {
 }
 char ** AllocAlignAndInitBuffer( const TestParams & params ) {
 
-   // calculate number of bytes to allocate
-   // 2x just to leave some headroom when making the pointer chase
-   const U64 numByte = 2 * params.maxsize;
+   const U64 numByte = NumByte( params );
    const U64 numPtrs = numByte / sizeof( char* );
    
    // node bind "to"
@@ -179,7 +188,7 @@ char ** MeasureLatency( char ** buf, const U64 size, const TestParams & params, 
    
    DEBUG_PRINT( "MeasureLatency()" );
    
-   const U64 numByte = 2 * params.maxsize;
+   const U64 numByte   = NumByte( params );
    const U32 numTrials = params.numTrials;
    
    FillBufferRandomPtrMod( buf, size, numByte );
@@ -300,7 +309,7 @@ int main( int argc, char ** argv ) {
    }
    const U64 maxSize = params.maxsize;
    
-   U64 size = params.maxsize;
+   U64 size = params.maxsize << 1;
 
    cout << "=== mem-latency ===" << endl;
    DEBUG_PRINT( "sizeof( char* ) = " << sizeof( char* ) );
