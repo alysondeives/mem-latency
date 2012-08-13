@@ -33,7 +33,7 @@ char ** PointerChase( char ** buf, char ** p, timespec * clks ) {
    clock_gettime( CLOCK_MONOTONIC, clks ); clks++;
    POINTERCHASE
    clock_gettime( CLOCK_MONOTONIC, clks ); clks++;
-   double diff = DiffTimespec( clks-2, clks-1, double( NUMCHASE ) );
+   const double diff = 1e9 * DiffTimespec( clks-2, clks-1, double( NUMCHASE ) );
    cout << "... PointerChase(): leaving, diff = " << diff << " nsec" << endl;
    return p;
 }
