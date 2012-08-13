@@ -26,8 +26,13 @@ LFLAGS += -Wall
 INCLUDES  = -I.
 CC = g++
 
+ifdef MAC
+OBJDIR  = ../pbj
+BINDIR  = ../cin
+else
 OBJDIR  = ../obj
 BINDIR  = ../bin
+endif
 
 all: dirs $(BINDIR)/mem-latency
   
@@ -52,8 +57,16 @@ dirs:
 	mkdir -p $(BINDIR)
 	mkdir -p $(OBJDIR)
 
-clean:
+veryclean:
 	\rm -f $(OBJDIR)/*
+	\rm -f $(BINDIR)/*
+	\rm -f *~
+	\rm -f *.o
+
+clean:
+	\rm -f $(OBJDIR)/MallocAlign.o
+	\rm -f $(OBJDIR)/TimeDiff.o
+	\rm -f $(OBJDIR)/mem-latency.o
 	\rm -f $(BINDIR)/*
 	\rm -f *~
 	\rm -f *.o
