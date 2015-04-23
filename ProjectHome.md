@@ -1,0 +1,1 @@
+A quick and dirty tool to measure memory latency.  Includes NUMA support.  Measures latency to L1, L2, L3, and DIMM (DRAM).  Can measure to remote nodes (across sockets).  Compiles on Mac OSX & Linux.
